@@ -94,8 +94,6 @@ public class FunctionLibrary {
         // reach the end, add all nvFuncs to the candidates
         if (idx == argumentTypes.size()) {
             candidates.addAll(curNode.nvFuncs);
-        } else {
-            candidates.clear();
         }
 
         return candidates;

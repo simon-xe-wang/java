@@ -17,11 +17,13 @@ class FunctionLibraryTest {
     @BeforeAll
     static void setup() {
         Set<Function> funcs = Set.of(
-                new Function("a", List.of("I"), false),
-                new Function("b", List.of("I"), true),
-                new Function("c", List.of("I", "I"), true),
-                new Function("d", List.of("I", "S"), false),
-                new Function("e", List.of("I", "S", "I"), true)
+                new Function("FuncA", List.of("String", "Integer", "Integer"), false),
+                new Function("FuncB", List.of("String", "Integer"), true),
+                new Function("FuncC", List.of("Integer"), true),
+                new Function("FuncD", List.of("Integer", "Integer"), true),
+                new Function("FuncE", List.of("Integer", "Integer", "Integer"), false),
+                new Function("FuncF", List.of("String"), false),
+                new Function("FuncG", List.of("Integer"), false)
         );
 
         functionLibrary.register(funcs);
@@ -29,10 +31,10 @@ class FunctionLibraryTest {
 
     @Test
     void findMatch1() {
-        List<Function> actual = functionLibrary.findMatches(List.of("I"));
+        List<Function> actual = functionLibrary.findMatches(List.of("Integer", "Integer", "Integer", "Integer"));
 
         assertEquals(
-                List.of("a", "b"),
+                List.of("FuncC", "FuncD"),
                 actual.stream()
                         .map( f -> f.name)
                         .sorted()
@@ -41,10 +43,10 @@ class FunctionLibraryTest {
 
     @Test
     void findMatch2() {
-        List<Function> actual = functionLibrary.findMatches(List.of("I", "I"));
+        List<Function> actual = functionLibrary.findMatches(List.of("Integer", "Integer", "Integer"));
 
         assertEquals(
-                List.of("b", "c"),
+                List.of("FuncC", "FuncD", "FuncE"),
                 actual.stream()
                         .map( f -> f.name)
                         .sorted()
@@ -53,13 +55,50 @@ class FunctionLibraryTest {
 
     @Test
     void findMatch3() {
-        List<Function> actual = functionLibrary.findMatches(List.of("I", "I", "I", "I"));
+        List<Function> actual = functionLibrary.findMatches(List.of("String", "Integer", "Integer", "Integer"));
 
         assertEquals(
-                List.of(),
+                List.of("FuncB"),
                 actual.stream()
                         .map( f -> f.name)
                         .sorted()
                         .collect(Collectors.toList()));
     }
+
+    @Test
+    void findMatch4() {
+        List<Function> actual = functionLibrary.findMatches(List.of("String", "Integer", "Integer"));
+
+        assertEquals(
+                List.of("FuncA", "FuncB"),
+                actual.stream()
+                        .map( f -> f.name)
+                        .sorted()
+                        .collect(Collectors.toList()));
+    }
+
+    @Test
+    void findMatch5() {
+        List<Function> actual = functionLibrary.findMatches(List.of("Integer"));
+
+        assertEquals(
+                List.of("FuncC", "FuncG"),
+                actual.stream()
+                        .map( f -> f.name)
+                        .sorted()
+                        .collect(Collectors.toList()));
+    }
+
+    @Test
+    void findMatch6() {
+        List<Function> actual = functionLibrary.findMatches(List.of("String"));
+
+        assertEquals(
+                List.of("FuncF"),
+                actual.stream()
+                        .map( f -> f.name)
+                        .sorted()
+                        .collect(Collectors.toList()));
+    }
+
 }
